@@ -1,9 +1,10 @@
 import Head from "next/head";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Button from "../components/Button";
 import ProductCard from "../components/ProductCard";
 import SectionWrapper from "../components/SectionWrapper";
-import { categories, formatCurrency, products } from "../data/products";
+import { useProductCatalog } from "../components/ProductCatalogContext";
+import { categories, formatCurrency } from "../data/products";
 import { motion } from "framer-motion";
 
 const fadeUp = {
@@ -43,24 +44,58 @@ const slideUp = {
 };
 
 const categoryOptions = ["All", ...categories.map((c) => c.name)];
-const maxProductPrice = Math.max(...products.map((p) => p.price));
+const rowOptions = [10, 20, 50, 100];
 
 export default function ProductsPage() {
+  const { products } = useProductCatalog();
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [maxPrice, setMaxPrice] = useState(maxProductPrice);
+  const [maxPrice, setMaxPrice] = useState(null);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const maxProductPrice = useMemo(() => {
+    return Math.max(500, ...products.map((product) => Number(product.price) || 0));
+  }, [products]);
+
+  const activeMaxPrice = maxPrice ?? maxProductPrice;
+
+  useEffect(() => {
+    setMaxPrice((currentMaxPrice) => {
+      if (currentMaxPrice === null) {
+        return maxProductPrice;
+      }
+
+      return Math.min(currentMaxPrice, maxProductPrice);
+    });
+  }, [maxProductPrice]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       const matchesCategory =
         selectedCategory === "All" || product.category === selectedCategory;
-      const matchesPrice = product.price <= maxPrice;
+      const matchesPrice = product.price <= activeMaxPrice;
       return matchesCategory && matchesPrice;
     });
-  }, [selectedCategory, maxPrice]);
+  }, [selectedCategory, activeMaxPrice, products]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / rowsPerPage));
+  const pageStartIndex = (currentPage - 1) * rowsPerPage;
+  const visibleProducts = filteredProducts.slice(pageStartIndex, pageStartIndex + rowsPerPage);
+  const showingStart = filteredProducts.length === 0 ? 0 : pageStartIndex + 1;
+  const showingEnd = Math.min(pageStartIndex + rowsPerPage, filteredProducts.length);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, activeMaxPrice, rowsPerPage]);
+
+  useEffect(() => {
+    setCurrentPage((page) => Math.min(page, totalPages));
+  }, [totalPages]);
 
   function resetFilters() {
     setSelectedCategory("All");
     setMaxPrice(maxProductPrice);
+    setCurrentPage(1);
   }
 
   return (
@@ -88,14 +123,13 @@ export default function ProductsPage() {
             Shop wellness products
           </h1>
           <p className="mt-5 text-base leading-8 text-slate-600">
-            A clean product listing flow with category and price filters.
+            A clean product listing flow with category, price and row controls.
           </p>
         </motion.div>
       </SectionWrapper>
 
       <SectionWrapper className="bg-slate-50 pt-8">
         <div className="grid gap-8 lg:grid-cols-[280px_1fr]">
-
           <motion.aside
             variants={slideLeft}
             initial="hidden"
@@ -114,7 +148,6 @@ export default function ProductsPage() {
               </button>
             </div>
 
-            {/* CATEGORY */}
             <div className="mt-6">
               <p className="text-sm font-bold text-slate-900">Category</p>
               <div className="mt-3 space-y-2">
@@ -138,21 +171,20 @@ export default function ProductsPage() {
               </div>
             </div>
 
-            {/* PRICE */}
             <div className="mt-8">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-bold text-slate-900">Max price</p>
                 <p className="text-sm font-semibold text-leaf-800">
-                  {formatCurrency(maxPrice)}
+                  {formatCurrency(activeMaxPrice)}
                 </p>
               </div>
 
               <input
                 type="range"
-                min="500"
+                min="0"
                 max={maxProductPrice}
                 step="100"
-                value={maxPrice}
+                value={activeMaxPrice}
                 onChange={(e) => setMaxPrice(Number(e.target.value))}
                 className="mt-4 w-full accent-leaf-800"
               />
@@ -168,7 +200,7 @@ export default function ProductsPage() {
               className="mb-5 flex flex-col justify-between gap-3 rounded-2xl border border-slate-200 bg-blue-50 p-4 shadow-sm sm:flex-row sm:items-center"
             >
               <p className="text-sm font-semibold text-slate-700">
-                Showing {filteredProducts.length} of {products.length} products
+                Showing {showingStart}-{showingEnd} of {filteredProducts.length} products
               </p>
 
               <Button href="/" variant="ghost" className="px-4 py-2">
@@ -176,16 +208,15 @@ export default function ProductsPage() {
               </Button>
             </motion.div>
 
-            {/* PRODUCTS GRID */}
             {filteredProducts.length > 0 ? (
               <motion.div
                 variants={container}
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true, amount: 0.1 }}
-                className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+                className="grid grid-cols-2 gap-3 sm:gap-5 xl:grid-cols-3 2xl:grid-cols-4"
               >
-                {filteredProducts.map((product) => (
+                {visibleProducts.map((product) => (
                   <motion.div key={product.id} variants={slideUp}>
                     <ProductCard product={product} />
                   </motion.div>
@@ -208,6 +239,52 @@ export default function ProductsPage() {
                 </Button>
               </motion.div>
             )}
+
+            <div className="mt-8 rounded-2xl border border-slate-200 bg-blue-50 p-4 shadow-sm">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                  <p className="text-sm font-bold text-slate-950">Rows per page</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {rowOptions.map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => setRowsPerPage(option)}
+                        className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                          rowsPerPage === option
+                            ? "border-leaf-800 bg-leaf-800 text-white"
+                            : "border-slate-200 bg-white text-slate-700 hover:border-leaf-300 hover:bg-leaf-50"
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between gap-3 lg:justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                    disabled={currentPage === 1}
+                    className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-leaf-50 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    Previous
+                  </button>
+                  <span className="text-sm font-semibold text-slate-700">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+                    disabled={currentPage === totalPages}
+                    className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-leaf-50 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </SectionWrapper>

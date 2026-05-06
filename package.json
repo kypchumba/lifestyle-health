@@ -4,6 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:frontend": "next dev",
+    "dev:backend": "backend\\.venv\\Scripts\\python.exe -m uvicorn app.main:app --reload --port 8000 --app-dir backend",
+    "backend:install": "python -m venv backend\\.venv && backend\\.venv\\Scripts\\python.exe -m pip install -r backend\\requirements.txt",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

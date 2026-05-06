@@ -6,3 +6,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+backend/.env
+backend/.venv
+__pycache__
+*.py[cod]
+public/uploads/*
+!public/uploads/.gitkeep

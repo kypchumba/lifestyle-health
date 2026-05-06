@@ -76,8 +76,8 @@ export const products = [
       "A bright herbal tea placeholder for a refreshing cup at any time of day. Add real product notes, ingredients and preparation instructions here."
   },
   {
-    id: "B-complex-sunshine-nutrition",
-    name: "B-Complex Sunshine Nutrition",
+    id: "B-complex-nutrition",
+    name: "B-Complex Nutrition",
     price: 980,
     oldPrice: 1200,
     image: "/complex.png",

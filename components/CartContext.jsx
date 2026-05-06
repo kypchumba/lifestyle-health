@@ -1,10 +1,38 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const cartHistoryRef = useRef(false);
+
+  function pushCartHistory() {
+    if (typeof window === "undefined" || cartHistoryRef.current) {
+      return;
+    }
+
+    window.history.pushState(
+      { ...(window.history.state || {}), wellnessCartOpen: true },
+      "",
+      window.location.href
+    );
+    cartHistoryRef.current = true;
+  }
+
+  function openCart() {
+    pushCartHistory();
+    setIsCartOpen(true);
+  }
+
+  function closeCart() {
+    setIsCartOpen(false);
+
+    if (typeof window !== "undefined" && cartHistoryRef.current) {
+      cartHistoryRef.current = false;
+      window.history.back();
+    }
+  }
 
   function addToCart(product, quantity = 1) {
     setCart((currentCart) => {
@@ -18,7 +46,7 @@ export function CartProvider({ children }) {
 
       return [...currentCart, { ...product, quantity }];
     });
-    setIsCartOpen(true);
+    openCart();
   }
 
   function updateQuantity(productId, quantity) {
@@ -40,6 +68,31 @@ export function CartProvider({ children }) {
     setCart([]);
   }
 
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return undefined;
+    }
+
+    function handlePopState(event) {
+      if (event.state?.wellnessCartOpen) {
+        cartHistoryRef.current = true;
+        setIsCartOpen(true);
+        return;
+      }
+
+      if (cartHistoryRef.current) {
+        cartHistoryRef.current = false;
+        setIsCartOpen(false);
+      }
+    }
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
   const subtotal = useMemo(
     () => cart.reduce((total, item) => total + item.price * item.quantity, 0),
     [cart]
@@ -59,8 +112,8 @@ export function CartProvider({ children }) {
     updateQuantity,
     removeFromCart,
     clearCart,
-    openCart: () => setIsCartOpen(true),
-    closeCart: () => setIsCartOpen(false)
+    openCart,
+    closeCart,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

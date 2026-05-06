@@ -1,44 +1,105 @@
 import Head from "next/head";
 import { useState } from "react";
+import { useRouter } from "next/router";
 import Button from "../../components/Button";
 import { useCart } from "../../components/CartContext";
 import ProductCard from "../../components/ProductCard";
+import { useProductCatalog } from "../../components/ProductCatalogContext";
 import SectionWrapper from "../../components/SectionWrapper";
-import { formatCurrency, products } from "../../data/products";
+import { formatCurrency, products as defaultProducts } from "../../data/products";
 
 export default function ProductDetailsPage({ product }) {
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
+  const { products, isCatalogReady } = useProductCatalog();
+  const router = useRouter();
+  const productId = router.query.id;
+  const catalogProduct = products.find((item) => item.id === productId);
+  const currentProduct = catalogProduct || product;
 
-  const relatedProducts = products
-    .filter((item) => item.category === product.category && item.id !== product.id)
-    .slice(0, 4);
+  const relatedProducts = currentProduct
+    ? products
+        .filter((item) => item.category === currentProduct.category && item.id !== currentProduct.id)
+        .slice(0, 4)
+    : [];
+
+  function handleBack() {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.back();
+      return;
+    }
+
+    router.push("/products");
+  }
+
+  if (!currentProduct) {
+    return (
+      <>
+        <Head>
+          <title>Product details | Wellness E-commerce Frontend</title>
+        </Head>
+        <button
+          type="button"
+          onClick={handleBack}
+          className="fixed bottom-5 left-5 z-30 rounded-full border border-leaf-200 bg-white px-4 py-3 text-sm font-semibold text-leaf-900 shadow-2xl transition hover:-translate-y-1 hover:bg-leaf-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-leaf-700 focus-visible:ring-offset-2"
+        >
+          Back
+        </button>
+        <SectionWrapper className="bg-white">
+          <div className="mx-auto max-w-2xl rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-leaf-800">
+              Product details
+            </p>
+            <h1 className="mt-3 text-3xl font-bold text-slate-950">
+              {isCatalogReady ? "Product not found" : "Loading product"}
+            </h1>
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              {isCatalogReady
+                ? "This product is not available in the current catalog."
+                : "Checking the saved admin catalog for this product."}
+            </p>
+            <Button href="/products" className="mt-6">
+              Back to shop
+            </Button>
+          </div>
+        </SectionWrapper>
+      </>
+    );
+  }
 
   return (
     <>
       <Head>
-        <title>{product.name} | Wellness E-commerce Frontend</title>
-        <meta name="description" content={product.description} />
+        <title>{currentProduct.name} | Wellness E-commerce Frontend</title>
+        <meta name="description" content={currentProduct.description} />
       </Head>
+
+      <button
+        type="button"
+        onClick={handleBack}
+        className="fixed bottom-5 left-5 z-30 rounded-full border border-leaf-200 bg-white px-4 py-3 text-sm font-semibold text-leaf-900 shadow-2xl transition hover:-translate-y-1 hover:bg-leaf-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-leaf-700 focus-visible:ring-offset-2"
+      >
+        Back
+      </button>
 
       <SectionWrapper className="bg-white">
         <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
           <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-100 shadow-soft">
             <img
-              src={product.image}
-              alt={`${product.name} placeholder`}
+              src={currentProduct.image}
+              alt={`${currentProduct.name} placeholder`}
               className="aspect-square w-full object-cover"
             />
           </div>
 
           <div className="lg:pt-8">
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-leaf-800">
-              {product.category}
+              {currentProduct.category}
             </p>
-            <h1 className="mt-4 text-4xl font-bold text-slate-950">{product.name}</h1>
-            <p className="mt-4 text-2xl font-bold text-leaf-800">{formatCurrency(product.price)}</p>
+            <h1 className="mt-4 text-4xl font-bold text-slate-950">{currentProduct.name}</h1>
+            <p className="mt-4 text-2xl font-bold text-leaf-800">{formatCurrency(currentProduct.price)}</p>
             <p className="mt-6 max-w-2xl text-base leading-8 text-slate-600">
-              {product.description}
+              {currentProduct.description}
             </p>
 
             <div className="mt-8 flex flex-col gap-5 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:flex-row sm:items-center sm:justify-between">
@@ -62,7 +123,7 @@ export default function ProductDetailsPage({ product }) {
                   </button>
                 </div>
               </div>
-              <Button className="w-full sm:w-auto" onClick={() => addToCart(product, quantity)}>
+              <Button className="w-full sm:w-auto" onClick={() => addToCart(currentProduct, quantity)}>
                 Add to Cart
               </Button>
             </div>
@@ -78,7 +139,7 @@ export default function ProductDetailsPage({ product }) {
             </p>
             <h2 className="mt-3 text-3xl font-bold text-slate-950">More from this category</h2>
           </div>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
             {relatedProducts.map((item) => (
               <ProductCard key={item.id} product={item} />
             ))}
@@ -91,23 +152,17 @@ export default function ProductDetailsPage({ product }) {
 
 export function getStaticPaths() {
   return {
-    paths: products.map((product) => ({ params: { id: product.id } })),
-    fallback: false
+    paths: defaultProducts.map((product) => ({ params: { id: product.id } })),
+    fallback: "blocking",
   };
 }
 
 export function getStaticProps({ params }) {
-  const product = products.find((item) => item.id === params.id);
-
-  if (!product) {
-    return {
-      notFound: true
-    };
-  }
+  const product = defaultProducts.find((item) => item.id === params.id) || null;
 
   return {
     props: {
-      product
-    }
+      product,
+    },
   };
 }
