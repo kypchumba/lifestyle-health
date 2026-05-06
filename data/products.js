@@ -5,19 +5,19 @@ export const categories = [
     id: "herbs",
     name: "Herbs",
     description: "Everyday botanical blends for gentle wellness rituals.",
-    image: "/herbs.jpg"
+    image: "/herbs.png"
   },
   {
     id: "spices-nuts",
     name: "Spices & Nuts",
     description: "Pantry staples selected for flavor, texture and balance.",
-    image: "/spices.jpg"
+    image: "/spices.png"
   },
   {
     id: "therapeutic-products",
     name: "Therapeutic Products",
     description: "Self-care essentials for calm, comfort and recovery.",
-    image: "/stock.jpg"
+    image: "/stock.png"
   }
 ];
 
