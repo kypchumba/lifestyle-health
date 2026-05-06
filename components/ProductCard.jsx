@@ -3,11 +3,16 @@ import Button from "./Button";
 import { formatCurrency } from "../data/products";
 import { useCart } from "./CartContext";
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, isNew }) {
   const { addToCart } = useCart();
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-soft">
+    <article className="relative group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white">
+      {isNew && (
+        <span className="absolute left-3 top-3 rounded-full bg-red-200 px-3 py-1 text-xs font-semibold text-white-700">
+          NEW
+        </span>
+      )}
       <Link href={`/products/${product.id}`} className="block bg-slate-100">
         <img
           src={product.image}
@@ -22,7 +27,22 @@ export default function ProductCard({ product }) {
         <Link href={`/products/${product.id}`} className="mt-2">
           <h3 className="text-lg font-semibold text-slate-950">{product.name}</h3>
         </Link>
-        <p className="mt-2 text-base font-bold text-leaf-800">{formatCurrency(product.price)}</p>
+          <p className="text-xl font-bold text-green-600">
+            {formatCurrency(product.price)}
+          </p>
+        
+          {product.oldPrice && (
+            <p className="text-sm font-medium text-red-500 line-through">
+              {formatCurrency(product.oldPrice)}
+            </p>
+          )}
+
+          {product.oldPrice && (
+            <span className="text-xs font-semibold text-green-600">
+              -{Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}%
+            </span>
+          )}
+
         <Button className="mt-5 w-full" onClick={() => addToCart(product)}>
           Add to Cart
         </Button>

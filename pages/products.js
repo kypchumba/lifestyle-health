@@ -66,14 +66,14 @@ export default function ProductsPage() {
   return (
     <>
       <Head>
-        <title>Shop Products | Wellness E-commerce Frontend</title>
+        <title>Shop Products | Wellness Wave Centre</title>
         <meta
           name="description"
           content="Browse mock wellness products by category and price."
         />
       </Head>
 
-      <SectionWrapper className="bg-white pb-8">
+      <SectionWrapper className="bg-blue-50 pb-8">
         <motion.div
           variants={fadeUp}
           initial="hidden"
@@ -88,8 +88,7 @@ export default function ProductsPage() {
             Shop wellness products
           </h1>
           <p className="mt-5 text-base leading-8 text-slate-600">
-            A clean product listing flow with category and price filters. Product images are
-            placeholders and all product content is mock data.
+            A clean product listing flow with category and price filters.
           </p>
         </motion.div>
       </SectionWrapper>
@@ -102,7 +101,7 @@ export default function ProductsPage() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.2 }}
-            className="h-fit rounded-2xl border border-slate-200 bg-white p-5 shadow-sm lg:sticky lg:top-28"
+            className="h-fit rounded-2xl border border-slate-200 bg-blue-50 p-5 shadow-sm lg:sticky lg:top-28"
           >
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold text-slate-950">Filters</h2>
@@ -166,7 +165,7 @@ export default function ProductsPage() {
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, amount: 0.2 }}
-              className="mb-5 flex flex-col justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center"
+              className="mb-5 flex flex-col justify-between gap-3 rounded-2xl border border-slate-200 bg-blue-50 p-4 shadow-sm sm:flex-row sm:items-center"
             >
               <p className="text-sm font-semibold text-slate-700">
                 Showing {filteredProducts.length} of {products.length} products
@@ -196,7 +195,7 @@ export default function ProductsPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center"
+                className="rounded-2xl border border-dashed border-slate-300 bg-blue-50 p-10 text-center"
               >
                 <h2 className="text-xl font-bold text-slate-950">
                   No products found

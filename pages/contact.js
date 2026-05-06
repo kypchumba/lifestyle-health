@@ -4,10 +4,6 @@ import Button from "../components/Button";
 import SectionWrapper from "../components/SectionWrapper";
 import { motion } from "framer-motion";
 
-/* =========================
-   ANIMATION SYSTEM
-========================= */
-
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
   show: {
@@ -55,19 +51,16 @@ export default function ContactPage() {
   return (
     <>
       <Head>
-        <title>Contact | Wellness E-commerce Frontend</title>
+        <title>Contact | Wellness Wave Centre</title>
         <meta
           name="description"
           content="Mock contact page for a wellness e-commerce frontend."
         />
       </Head>
 
-      <SectionWrapper className="bg-white">
+      <SectionWrapper className="bg-blue-50">
         <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
 
-          {/* =========================
-              LEFT SIDE (INFO)
-          ========================= */}
           <motion.div
             variants={stagger}
             initial="hidden"
@@ -77,55 +70,130 @@ export default function ContactPage() {
               variants={fadeUp}
               className="text-sm font-bold uppercase tracking-[0.2em] text-leaf-800"
             >
-              Contact placeholder
+              Contact us
             </motion.p>
 
             <motion.h1
               variants={fadeUp}
               className="mt-3 text-4xl font-bold text-slate-950"
             >
-              Talk to the shop team
+              Talk to an expert
             </motion.h1>
 
             <motion.p
               variants={fadeUp}
               className="mt-5 text-base leading-8 text-slate-600"
             >
-              Use this page for customer questions, order support, consultation requests, or general
-              inquiries. The form is frontend-only and ready to connect to a backend later.
+              Send your questions, orders, consultation requests or general inquiries.
             </motion.p>
 
-            {/* CONTACT BOX */}
             <motion.div
               variants={fadeUp}
               className="mt-8 space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-6"
             >
               <div>
                 <p className="text-sm font-bold text-slate-950">Email</p>
-                <p className="mt-1 text-sm text-slate-600">hello@example.com</p>
+                <p className="mt-1 text-sm text-slate-600">chumbakenny@gmail.com</p>
               </div>
 
               <div>
                 <p className="text-sm font-bold text-slate-950">Phone</p>
-                <p className="mt-1 text-sm text-slate-600">+254 700 000 000</p>
+                <p className="mt-1 text-sm text-slate-600">+254 113 365 971</p>
               </div>
 
               <div>
                 <p className="text-sm font-bold text-slate-950">Location</p>
-                <p className="mt-1 text-sm text-slate-600">City, Country</p>
+                <p className="mt-1 text-sm text-slate-600">Nairobi, Kenya</p>
               </div>
+              <div className="md:col-start-2 md:col-end-4">
+                <div className="mt-6 flex flex-wrap items-center gap-6">
+              
+                  {/* WhatsApp */}
+                  <a
+                    href="https://wa.me/254113365971"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative transition-transform duration-300 hover:scale-110"
+                  >
+                    <img src="/whatsapp.png" alt="WhatsApp" className="h-8 w-8" />
+                    <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 scale-0 rounded bg-slate-900 px-2 py-1 text-xs text-white opacity-0 transition-all duration-200 group-hover:scale-100 group-hover:opacity-100">
+                      WhatsApp
+                    </span>
+                  </a>
+              
+                  {/* Gmail */}
+                  <a
+                    href="mailto:chumbakenny@gmail.com"
+                    className="group relative transition-transform duration-300 hover:scale-110"
+                  >
+                    <img src="/gmail.png" alt="Email" className="h-8 w-8" />
+                    <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 scale-0 rounded bg-slate-900 px-2 py-1 text-xs text-white opacity-0 transition-all duration-200 group-hover:scale-100 group-hover:opacity-100">
+                      Email
+                    </span>
+                  </a>
+              
+                  {/* Instagram */}
+                  <a
+                    href="https://instagram.com/kypchumbaa"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative transition-transform duration-300 hover:scale-110"
+                  >
+                    <img src="/instagram.png" alt="Instagram" className="h-8 w-8" />
+                    <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 scale-0 rounded bg-slate-900 px-2 py-1 text-xs text-white opacity-0 transition-all duration-200 group-hover:scale-100 group-hover:opacity-100">
+                      Instagram
+                    </span>
+                  </a>
+              
+                  {/* TikTok */}
+                  <a
+                    href="https://tiktok.com/@padri_gaming"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative transition-transform duration-300 hover:scale-110"
+                  >
+                    <img src="/tiktok.png" alt="TikTok" className="h-8 w-8" />
+                    <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 scale-0 rounded bg-slate-900 px-2 py-1 text-xs text-white opacity-0 transition-all duration-200 group-hover:scale-100 group-hover:opacity-100">
+                      TikTok
+                    </span>
+                  </a>
+              
+                  {/* Facebook */}
+                  <a
+                    href="https://facebook.com/ken.orange.10"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative transition-transform duration-300 hover:scale-110"
+                  >
+                    <img src="/facebook.png" alt="Facebook" className="h-8 w-8" />
+                    <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 scale-0 rounded bg-slate-900 px-2 py-1 text-xs text-white opacity-0 transition-all duration-200 group-hover:scale-100 group-hover:opacity-100">
+                      Facebook
+                    </span>
+                  </a>
+              
+                  {/* Phone */}
+                  <a
+                    href="tel:+254113365971"
+                    className="group relative transition-transform duration-300 hover:scale-110"
+                  >
+                    <img src="/phone.png" alt="Phone" className="h-8 w-8" />
+                    <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 scale-0 rounded bg-slate-900 px-2 py-1 text-xs text-white opacity-0 transition-all duration-200 group-hover:scale-100 group-hover:opacity-100">
+                      Call
+                    </span>
+                  </a>
+              
+                </div>
+              </div>
+
             </motion.div>
           </motion.div>
 
-          {/* =========================
-              FORM
-          ========================= */}
           <motion.form
             onSubmit={handleSubmit}
             variants={slideLeft}
             initial="hidden"
             animate="show"
-            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft sm:p-8"
+            className="rounded-2xl border border-slate-200 bg-blue-50 p-5 shadow-soft sm:p-8"
           >
             <motion.div
               variants={stagger}
@@ -144,12 +212,12 @@ export default function ContactPage() {
               </motion.label>
 
               <motion.label variants={fadeUp} className="block">
-                <span className="text-sm font-bold text-slate-900">Email</span>
+                <span className="text-sm font-bold text-slate-900">Phone</span>
                 <input
-                  type="email"
+                  type="tel"
                   required
                   className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-leaf-800 focus:ring-2 focus:ring-leaf-100"
-                  placeholder="you@example.com"
+                  placeholder="Your phone number"
                 />
               </motion.label>
             </motion.div>
@@ -185,7 +253,7 @@ export default function ContactPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="mt-4 rounded-xl bg-leaf-50 px-4 py-3 text-sm font-semibold text-leaf-900"
               >
-                Form submitted locally. Connect an API endpoint when backend support is ready.
+                Form submitted locally.
               </motion.p>
             )}
           </motion.form>

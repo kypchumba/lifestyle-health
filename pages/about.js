@@ -34,11 +34,11 @@ const imageVariant = {
 const values = [
   {
     title: "Thoughtful Curation",
-    copy: "Placeholder value copy for selecting products with clarity, purpose, and customer needs in mind.",
+    copy: "Placeholder value copy for selecting products with clarity, purpose and customer needs in mind.",
   },
   {
     title: "Everyday Access",
-    copy: "Placeholder value copy for making wellness products easier to browse, compare, and order.",
+    copy: "Placeholder value copy for making wellness products easier to browse, compare and order.",
   },
   {
     title: "Clear Guidance",
@@ -57,7 +57,7 @@ export default function AboutPage() {
         />
       </Head>
 
-      <SectionWrapper className="bg-white">
+      <SectionWrapper className="bg-blue-50">
         <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
 
           <motion.div
@@ -88,7 +88,7 @@ export default function AboutPage() {
               variants={fadeUp}
               className="mt-4 text-base leading-8 text-slate-600"
             >
-              We believe that true wellness encompasses the harmony of mind, body, and spirit. Our mission is to empower individuals to live their best lives by providing accessible, innovative, and personalized wellness solutions.
+              We believe that true wellness encompasses the harmony of mind, body and spirit. Our mission is to empower individuals to live their best lives by providing accessible, innovative and personalized wellness solutions.
             </motion.p>        
           </motion.div>
 
@@ -104,7 +104,7 @@ export default function AboutPage() {
         </div>
       </SectionWrapper>
 
-      <SectionWrapper className="bg-white">
+      <SectionWrapper className="bg-blue-50">
         <div className="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
       
           <motion.img
@@ -148,14 +148,14 @@ export default function AboutPage() {
               variants={fadeUp}
               className="mt-6 text-base leading-8 text-slate-600"
             >
-              What sets us apart is our holistic approach to wellness. We understand that each person’s journey to health is unique, which is why we take the time to listen to your concerns, goals, and aspirations. Our team of experienced wellness professionals, including nutritionists, fitness trainers, counselors, and mindfulness experts, work together to create comprehensive wellness  plans that address your individual needs.
+              What sets us apart is our holistic approach to wellness. We understand that each person’s journey to health is unique, which is why we take the time to listen to your concerns, goals and aspirations. Our team of experienced wellness professionals, including nutritionists, fitness trainers, counselors and mindfulness experts, work together to create comprehensive wellness  plans that address your individual needs.
             </motion.p>
           </motion.div>
       
         </div>
       </SectionWrapper>
 
-     <SectionWrapper className="bg-white">
+     <SectionWrapper className="bg-blue-50">
         <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
 
           <motion.div
@@ -179,14 +179,14 @@ export default function AboutPage() {
               variants={fadeUp}
               className="mt-6 text-base leading-8 text-slate-600"
             >
-              At Wellness Wave centre, we believe in the power of education and empowerment. We strive to provide you with the knowledge, tools, and support you need to make sustainable lifestyle changes that will positively impact your health and well-being for years to come.
+              At Wellness Wave centre, we believe in the power of education and empowerment. We strive to provide you with the knowledge, tools and support you need to make sustainable lifestyle changes that will positively impact your health and well-being for years to come.
             </motion.p>
 
             <motion.p
               variants={fadeUp}
               className="mt-4 text-base leading-8 text-slate-600"
             >
-              Whether you’re embarking on your wellness journey for the first time or seeking to take your health to the next level, we invite you to join us at our centre. Together, we can unlock your full potential and inspire a life of vitality, balance, and joy.
+              Whether you’re embarking on your wellness journey for the first time or seeking to take your health to the next level, we invite you to join us at our centre. Together, we can unlock your full potential and inspire a life of vitality, balance and joy.
             </motion.p>        
           </motion.div>
 

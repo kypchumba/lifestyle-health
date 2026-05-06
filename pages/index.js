@@ -2,7 +2,7 @@ import Head from "next/head";
 import Button from "../components/Button";
 import ProductCard from "../components/ProductCard";
 import SectionWrapper from "../components/SectionWrapper";
-import { categories, placeholderImage, products } from "../data/products";
+import { categories, newProducts } from "../data/products";
 import { motion } from "framer-motion";
 
 const fadeUp = {
@@ -42,20 +42,20 @@ const cardHover = {
 const features = [
   {
     title: "High Quality",
-    description: "Placeholder assurance copy for carefully selected wellness goods.",
+    description: "Carefully selected wellness goods.",
   },
   {
     title: "Affordable Delivery",
-    description: "Placeholder delivery copy for simple, transparent fulfillment options.",
+    description: "Simple and transparent fulfillment options.",
   },
   {
     title: "Trusted Products",
-    description: "Placeholder trust copy for product consistency and customer care.",
+    description: "Carefully curated products for your well-being.",
   },
 ];
 
 export default function HomePage() {
-  const featuredProducts = products.slice(0, 8);
+  const featuredProducts = newProducts.slice(0, 8);
 
   return (
     <>
@@ -63,11 +63,11 @@ export default function HomePage() {
         <title>Wellness Wave Centre</title>
         <meta
           name="description"
-          content="A modern wellness e-commerce frontend with products, categories, and cart UI."
+          content="A modern wellness e-commerce website with products, categories and cart UI."
         />
       </Head>
 
-      <section className="bg-white">
+      <section className="bg-blue-50">
         <div className="mx-auto grid min-h-[calc(100vh-76px)] max-w-7xl items-center gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1fr_0.9fr] lg:px-8">
 
           <motion.div
@@ -77,7 +77,7 @@ export default function HomePage() {
             className="max-w-2xl"
           >
             <motion.p variants={fadeUp} className="text-sm font-bold uppercase tracking-[0.22em] text-leaf-800">
-              Wellness shop placeholder
+              Wellness shop
             </motion.p>
 
             <motion.h1
@@ -91,8 +91,7 @@ export default function HomePage() {
               variants={fadeUp}
               className="mt-6 max-w-xl text-base leading-8 text-slate-600 sm:text-lg"
             >
-              Replace this hero copy with a concise product promise. Keep the journey direct:
-              discover categories, browse products, view details, and add items to cart.
+             Book sessions, browse products, view details and add items to cart.
             </motion.p>
 
             <motion.div
@@ -112,7 +111,7 @@ export default function HomePage() {
             animate="show"
             className="relative"
           >
-            <div className="absolute -left-4 top-6 hidden h-24 w-24 rounded-full border border-clay-300 lg:block" />
+            <div className="absolute -left-4 top-6 hidden h-24 w-24 lg:block" />
             <img
               src="/home.png"
               alt="Wellness hero placeholder"
@@ -137,7 +136,21 @@ export default function HomePage() {
               whileHover={{ y: -6 }}
               className="rounded-2xl border border-leaf-100 bg-white p-6 shadow-sm"
             >
-              <div className="mb-5 h-12 w-12 rounded-full bg-clay-100" />
+              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
+                 <svg
+                   className="h-6 w-6 text-green-500"
+                   fill="none"
+                   stroke="currentColor"
+                   strokeWidth="4"
+                   viewBox="0 0 24 24"
+                 >
+                   <path
+                     strokeLinecap="round"
+                     strokeLinejoin="round"
+                     d="M5 13l4 4L19 7"
+                   />
+                 </svg>
+               </div>
               <h2 className="text-xl font-bold text-slate-950">{feature.title}</h2>
               <p className="mt-3 text-sm leading-6 text-slate-600">
                 {feature.description}
@@ -147,7 +160,7 @@ export default function HomePage() {
         </motion.div>
       </SectionWrapper>
 
-      <SectionWrapper className="bg-white">
+      <SectionWrapper className="bg-blue-50">
         <motion.div
           variants={stagger}
           initial="hidden"
@@ -186,7 +199,7 @@ export default function HomePage() {
         </motion.div>
       </SectionWrapper>
 
-      <SectionWrapper className="bg-slate-50">
+      <SectionWrapper className="bg-blue-50">
         <div className="mb-8">
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-leaf-800">
             Featured products
@@ -203,15 +216,15 @@ export default function HomePage() {
           viewport={{ once: true, amount: 0.1 }}
           className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
         >
-          {featuredProducts.map((product) => (
-            <motion.div key={product.id} variants={fadeUp} whileHover={{ y: -6 }}>
-              <ProductCard product={product} />
+          {featuredProducts.map((newProduct) => (
+            <motion.div key={newProduct.id} variants={fadeUp} whileHover={{ y: -6 }}>
+              <ProductCard product={newProduct} isNew />
             </motion.div>
           ))}
         </motion.div>
       </SectionWrapper>
 
-      <SectionWrapper className="bg-white">
+      <SectionWrapper className="bg-blue-50">
         <div className="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
 
           <motion.img
@@ -239,9 +252,9 @@ export default function HomePage() {
             </h2>
 
             <p className="mt-5 text-base leading-8 text-slate-600">
-              This placeholder story introduces the people, values, and service philosophy behind
+              This placeholder story introduces the people, values and service philosophy behind
               the store. It can later be replaced with original brand copy, sourcing standards,
-              quality notes, and customer support details.
+              quality notes and customer support details.
             </p>
 
             <Button href="/about" className="mt-8" variant="secondary">

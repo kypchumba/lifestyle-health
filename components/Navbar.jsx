@@ -22,7 +22,6 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
 
-        {/* LOGO (BIG BUT NO LAYOUT BREAK) */}
         <Link href="/" className="flex items-center" aria-label="Go to home page">
           <div className="relative -my-4 flex items-center">
             <Image

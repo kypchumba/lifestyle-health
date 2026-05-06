@@ -97,7 +97,7 @@ export default function CartDrawer() {
             <span>{formatCurrency(subtotal)}</span>
           </div>
           <Button className="w-full" disabled={cart.length === 0}>
-            Checkout Placeholder
+            Checkout
           </Button>
           {cart.length > 0 && (
             <button
