@@ -162,7 +162,7 @@ export default function ProductsPage() {
                       name="category"
                       value={category}
                       checked={selectedCategory === category}
-                      onChange={() => setSelectedCategory(category)}
+                      onChange={() => {setSelectedCategory(category);setCurrentPage(1);}}
                       className="h-4 w-4 accent-leaf-800"
                     />
                     <span>{category}</span>
@@ -185,7 +185,7 @@ export default function ProductsPage() {
                 max={maxProductPrice}
                 step="100"
                 value={activeMaxPrice}
-                onChange={(e) => setMaxPrice(Number(e.target.value))}
+                onChange={(e) => {setMaxPrice(Number(e.target.value)); setCurrentPage(1);}}
                 className="mt-4 w-full accent-leaf-800"
               />
             </div>
@@ -208,20 +208,20 @@ export default function ProductsPage() {
               </Button>
             </motion.div>
 
-            {filteredProducts.length > 0 ? (
-              <motion.div
-                variants={container}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.1 }}
-                className="grid grid-cols-2 gap-3 sm:gap-5 xl:grid-cols-3 2xl:grid-cols-4"
-              >
-                {visibleProducts.map((product) => (
-                  <motion.div key={product.id} variants={slideUp}>
-                    <ProductCard product={product} />
-                  </motion.div>
-                ))}
-              </motion.div>
+              {filteredProducts.length > 0 ? (
+                <motion.div
+                  key={`${selectedCategory}-${activeMaxPrice}-${currentPage}`}
+                  variants={container}
+                  initial="hidden"
+                  animate="show"
+                  className="grid grid-cols-2 gap-3 sm:gap-5 xl:grid-cols-3 2xl:grid-cols-4"
+                >
+                  {visibleProducts.map((product) => (
+                    <motion.div key={product.id} variants={slideUp}>
+                      <ProductCard product={product} />
+                    </motion.div>
+                  ))}
+                </motion.div>
             ) : (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
