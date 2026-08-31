@@ -84,7 +84,7 @@ const therapyDetails = [
   {
     title: "SPORTS MASSAGE",
     content: [
-      "Sports massage focuses on enhancing athletic performance, preventing and treating sports-related injuries, and aiding recovery.",
+      "Sports massage focuses on enhancing athletic performance, preventing and treating sports-related injuries and aiding recovery.",
       "It typically combines deep tissue massage, stretching and joint mobilization tailored to the needs of active clients and athletes.",
     ],
   },
@@ -182,11 +182,11 @@ export default function HomePage() {
             animate="show"
             className="relative"
           >
-            <img
-              src="/home.png"
-              alt="Wellness hero placeholder"
-              className="relative aspect-[4/5] w-full rounded-[2rem] border border-slate-200 object-cover shadow-soft"
-            />
+           <img
+             src="/home.jpg"
+             alt="Wellness hero placeholder"
+             className="relative h-[450px] w-full rounded-[2rem] border border-slate-200 object-cover shadow-soft"
+           />
           </motion.div>
         </div>
       </section>
