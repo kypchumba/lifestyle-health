@@ -88,7 +88,7 @@ export default function ProductDetailsPage({ product }) {
             <img
               src={currentProduct.image}
               alt={`${currentProduct.name} placeholder`}
-              className="aspect-square w-full object-cover"
+              className="aspect-square w-full object-contain"
             />
           </div>
 
