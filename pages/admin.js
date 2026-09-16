@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
 import Button from "../components/Button";
 import SectionWrapper from "../components/SectionWrapper";
-import { ADMIN_TOKEN_KEY, API_BASE_URL, createProductId, useProductCatalog } from "../components/ProductCatalogContext";
+import { ADMIN_TOKEN_KEY, createProductId, getApiRequestUrl, useProductCatalog } from "../components/ProductCatalogContext";
 import { categories, formatCurrency } from "../data/products";
 
 const ADMIN_USERNAME = "admin";
@@ -104,34 +104,40 @@ export default function AdminPage() {
     setLoginError("");
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginForm),
-      });
+      const loginUrl = getApiRequestUrl("/api/auth/login", { allowLocalhost: true });
 
-      if (response.ok) {
-        const payload = await response.json();
-        window.sessionStorage.setItem(SESSION_KEY, "true");
-        window.sessionStorage.setItem(ADMIN_TOKEN_KEY, payload.accessToken);
-        setIsAuthenticated(true);
-        setLoginError("");
+      if (loginUrl) {
+        const response = await fetch(loginUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(loginForm),
+        });
+
+        if (response.ok) {
+          const payload = await response.json();
+          window.sessionStorage.setItem(SESSION_KEY, "true");
+          window.sessionStorage.setItem(ADMIN_TOKEN_KEY, payload.accessToken);
+          setIsAuthenticated(true);
+          setLoginError("");
+          return;
+        }
+
+        const payload = await response.json().catch(() => ({}));
+        setLoginError(payload.detail || "Invalid admin details.");
         return;
       }
-
-      const payload = await response.json().catch(() => ({}));
-      setLoginError(payload.detail || "Invalid admin details.");
-      return;
     } catch (_error) {
-      if (loginForm.username === ADMIN_USERNAME && loginForm.password === ADMIN_PASSWORD) {
-        window.sessionStorage.setItem(SESSION_KEY, "true");
-        window.sessionStorage.removeItem(ADMIN_TOKEN_KEY);
-        setIsAuthenticated(true);
-        setLoginError("");
-        return;
-      }
+      // Fall through to the browser-only admin fallback below.
+    }
+
+    if (loginForm.username === ADMIN_USERNAME && loginForm.password === ADMIN_PASSWORD) {
+      window.sessionStorage.setItem(SESSION_KEY, "true");
+      window.sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+      setIsAuthenticated(true);
+      setLoginError("");
+      return;
     }
 
     setLoginError("Invalid admin details.");
@@ -139,9 +145,10 @@ export default function AdminPage() {
 
   async function handleLogout() {
     const token = window.sessionStorage.getItem(ADMIN_TOKEN_KEY);
+    const logoutUrl = getApiRequestUrl("/api/auth/logout", { allowLocalhost: true });
 
-    if (token) {
-      await fetch(`${API_BASE_URL}/api/auth/logout`, {
+    if (token && logoutUrl) {
+      await fetch(logoutUrl, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -212,8 +219,13 @@ export default function AdminPage() {
 
     const formData = new FormData();
     formData.append("image", selectedImageFile);
+    const uploadUrl = getApiRequestUrl("/api/uploads/products", { allowLocalhost: true });
 
-    const response = await fetch(`${API_BASE_URL}/api/uploads/products`, {
+    if (!uploadUrl) {
+      throw new Error("Start the backend and login again before uploading product images.");
+    }
+
+    const response = await fetch(uploadUrl, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
