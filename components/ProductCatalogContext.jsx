@@ -4,9 +4,82 @@ import { newProducts as defaultNewProducts, products as defaultProducts } from "
 const ProductCatalogContext = createContext(null);
 const STORAGE_KEY = "wellness-product-catalog-v1";
 export const ADMIN_TOKEN_KEY = "wellness-admin-token";
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+const LOCAL_API_HOSTS = new Set(["localhost", "127.0.0.1", "0.0.0.0", "::1", "[::1]"]);
+export const API_BASE_URL = normalizeApiBaseUrl(process.env.NEXT_PUBLIC_API_BASE_URL);
 
 const defaultNewArrivalIds = defaultNewProducts.map((product) => product.id);
+
+function normalizeApiBaseUrl(value) {
+  return String(value || "")
+    .trim()
+    .replace(/\/+$/, "");
+}
+
+function getConfiguredApiUrl() {
+  if (!API_BASE_URL) {
+    return null;
+  }
+
+  try {
+    const url = new URL(API_BASE_URL);
+
+    if (!["http:", "https:"].includes(url.protocol)) {
+      return null;
+    }
+
+    return url;
+  } catch (_error) {
+    return null;
+  }
+}
+
+function isLocalApiUrl(url) {
+  return LOCAL_API_HOSTS.has(url.hostname);
+}
+
+function isBrowserOnLocalhost() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  return LOCAL_API_HOSTS.has(window.location.hostname);
+}
+
+function canUsePublicCatalogApi() {
+  const apiUrl = getConfiguredApiUrl();
+
+  return Boolean(apiUrl && !isLocalApiUrl(apiUrl));
+}
+
+function canUseAdminCatalogApi() {
+  if (typeof window === "undefined" || !window.location.pathname.startsWith("/admin")) {
+    return false;
+  }
+
+  return canUseConfiguredApi({ allowLocalhost: true });
+}
+
+export function canUseConfiguredApi({ allowLocalhost = false } = {}) {
+  const apiUrl = getConfiguredApiUrl();
+
+  if (!apiUrl) {
+    return false;
+  }
+
+  if (!isLocalApiUrl(apiUrl)) {
+    return true;
+  }
+
+  return allowLocalhost && isBrowserOnLocalhost();
+}
+
+export function getApiRequestUrl(path, { allowLocalhost = false } = {}) {
+  if (!canUseConfiguredApi({ allowLocalhost })) {
+    return "";
+  }
+
+  return `${API_BASE_URL}${path}`;
+}
 
 function cleanProduct(product) {
   const price = Number(product.price) || 0;
@@ -73,8 +146,14 @@ function readStoredCatalog() {
   }
 }
 
-async function fetchJson(path, options = {}) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
+async function fetchJson(path, options = {}, config = {}) {
+  const requestUrl = getApiRequestUrl(path, config);
+
+  if (!requestUrl) {
+    throw new Error("API base URL is not configured for this environment.");
+  }
+
+  const response = await fetch(requestUrl, {
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -144,8 +223,23 @@ export function ProductCatalogProvider({ children }) {
         setCatalog(storedCatalog);
       }
 
+      const allowLocalhostCatalogApi = canUseAdminCatalogApi();
+      const shouldFetchApiCatalog = canUsePublicCatalogApi() || allowLocalhostCatalogApi;
+
+      if (!shouldFetchApiCatalog) {
+        if (isCurrent) {
+          setBackendStatus("offline");
+          setCatalogMessage("Using bundled and browser-saved catalog data.");
+          setIsCatalogReady(true);
+        }
+
+        return;
+      }
+
       try {
-        const apiCatalog = await fetchJson("/api/catalog");
+        const apiCatalog = await fetchJson("/api/catalog", {}, {
+          allowLocalhost: allowLocalhostCatalogApi,
+        });
 
         if (!isCurrent) {
           return;
@@ -198,6 +292,8 @@ export function ProductCatalogProvider({ children }) {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(catalog),
+    }, {
+      allowLocalhost: true,
     })
       .then((savedCatalog) => {
         if (savedCatalog) {
@@ -243,6 +339,8 @@ export function ProductCatalogProvider({ children }) {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+      }, {
+        allowLocalhost: true,
       })
         .then(() => {
           setCatalogMessage("Product removed from PostgreSQL.");
