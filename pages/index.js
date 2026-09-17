@@ -170,7 +170,7 @@ export default function HomePage() {
               className="mt-8 flex flex-col gap-3 sm:flex-row"
             >
               <Button href="/products">Shop Now</Button>
-              <Button href="/#about" scroll={false} variant="secondary">
+              <Button href="/#about" variant="secondary">
                 Our Story
               </Button>
             </motion.div>
