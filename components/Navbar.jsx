@@ -50,23 +50,34 @@ export default function Navbar() {
     };
   }, [router.pathname]);
 
-  function handleSectionClick(event, link) {
-    setIsMenuOpen(false);
-
-    if (!link.sectionId || router.pathname !== "/") {
-      return;
-    }
-
-    const section = document.getElementById(link.sectionId);
+  function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
 
     if (!section) {
       return;
     }
 
-    event.preventDefault();
     section.scrollIntoView({ behavior: "smooth", block: "start" });
-    setActiveSection(link.sectionId);
-    router.replace(link.href, undefined, { shallow: true, scroll: false });
+    setActiveSection(sectionId);
+    window.history.replaceState(null, "", `/#${sectionId}`);
+  }
+
+  async function handleSectionClick(event, link) {
+    setIsMenuOpen(false);
+
+    if (!link.sectionId || typeof window === "undefined") {
+      return;
+    }
+
+    event.preventDefault();
+
+    if (router.pathname !== "/") {
+      await router.push("/", undefined, { scroll: false });
+      window.requestAnimationFrame(() => scrollToSection(link.sectionId));
+      return;
+    }
+
+    scrollToSection(link.sectionId);
   }
 
   return (
