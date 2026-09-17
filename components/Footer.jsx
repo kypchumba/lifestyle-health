@@ -21,10 +21,10 @@ export default function Footer() {
         <div>
           <h3 className="text-xl font-bold uppercase tracking-[0.18em] text-green-400">Explore</h3>
           <div className="mt-4 flex flex-col gap-3 text-sm font-medium text-blue-400">
-            <Link href="/">Home</Link>
+            <Link href="/#home">Home</Link>
             <Link href="/products">Shop</Link>
-            <Link href="/about">About</Link>
-            <Link href="/contact">Contact</Link>
+            <Link href="/#about">About</Link>
+            <Link href="/#contact">Contact</Link>
           </div>
         </div>
 
